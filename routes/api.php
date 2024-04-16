@@ -17,17 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 // me faltan para mandar el codigo y luego recibirlo, otro para que se pase a activo, y ya creo
 
 // tambien para que vayan creciendo el de victorias y derrotas, y que en registro se cree la partida
-Route::get('/user', [UserController::class, 'index']);
-Route::get('/user/{id}', [UserController::class, 'show']);
+
 Route::post('/reg', [UserController::class, 'store']);
 Route::post('/login', [UserController::class, 'login']);
 
-Route::get('/registro', [RegistroController::class, 'index']);
-Route::get('/registro/{id}', [RegistroController::class, 'show']);
+Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
+    Route::get('/user', [UserController::class, 'index']);
+    Route::get('/user/{id}', [UserController::class, 'show']);
+
+    Route::get('/registro', [RegistroController::class, 'index']);
+    Route::get('/registro/{id}', [RegistroController::class, 'show']);
+});
