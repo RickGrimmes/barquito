@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('registros', function (Blueprint $table) {
-            $table->id();
-            $table->integer('player1');
-            $table->integer('player2');
-            $table->integer('winner')->nullable();
-            $table->timestamps();
+        Schema::table('registros', function (Blueprint $table) {
+            $table->integer('loser')->nullable();
         });
     }
 
@@ -29,6 +25,8 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('registros');
+        Schema::table('registros', function (Blueprint $table) {
+            //
+        });
     }
 };

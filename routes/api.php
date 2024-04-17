@@ -17,15 +17,17 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// me faltan para mandar el codigo y luego recibirlo, otro para que se pase a activo, y ya creo
-
 // tambien para que vayan creciendo el de victorias y derrotas, y que en registro se cree la partida
+
+Route::get('/verifyemail/{token}', [UserController::class, 'verifyEmail']);
 
 Route::post('/reg', [UserController::class, 'store']);
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/verifycode', [UserController::class, 'verifyCode']);
 
-Route::get('/verifyemail/{token}', [UserController::class, 'verifyEmail']);
-Route::get('/verifycode', [UserController::class, 'verifyCode']);
+
+Route::post('/game', [RegistroController::class, 'store']);
+Route::put('/game/{id}', [RegistroController::class, 'update']);
 
 Route::middleware('jwt.verify')->group(function () {
     Route::get('/user', [UserController::class, 'index']);
@@ -33,5 +35,4 @@ Route::middleware('jwt.verify')->group(function () {
 
     Route::get('/registro', [RegistroController::class, 'index']);
     Route::get('/registro/{id}', [RegistroController::class, 'show']);
-
 });

@@ -13,5 +13,6 @@ class Registro extends Model
         'player1',
         'player2',
         'winner',
+        'loser',
     ];
 }

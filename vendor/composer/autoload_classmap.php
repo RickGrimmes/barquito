@@ -22,6 +22,7 @@ return array(
     'App\\Http\\Middleware\\TrustProxies' => $baseDir . '/app/Http/Middleware/TrustProxies.php',
     'App\\Http\\Middleware\\ValidateSignature' => $baseDir . '/app/Http/Middleware/ValidateSignature.php',
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
+    'App\\Mail\\CodeEmail' => $baseDir . '/app/Mail/CodeEmail.php',
     'App\\Mail\\VerificationEmail' => $baseDir . '/app/Mail/VerificationEmail.php',
     'App\\Models\\Registro' => $baseDir . '/app/Models/Registro.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
