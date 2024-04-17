@@ -33,6 +33,6 @@ Route::middleware('jwt.verify')->group(function () {
     Route::get('/registro', [RegistroController::class, 'index']);
     Route::get('/registro/{id}', [RegistroController::class, 'show']);
 
-    Route::post('/game', [RegistroController::class, 'iniciarPartida']);
+    Route::post('/game', [RegistroController::class, 'crearPartida']);
     Route::put('/game', [RegistroController::class, 'comenzarPartida']);
 });

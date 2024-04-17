@@ -73,7 +73,7 @@ class RegistroController extends Controller
         }
     }
 
-    public function comenzarPartida(Request $request)
+    public function crearPartida(Request $request)
     {
         try
         {
