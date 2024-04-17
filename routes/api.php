@@ -19,15 +19,12 @@ use Illuminate\Support\Facades\Route;
 
 // tambien para que vayan creciendo el de victorias y derrotas, y que en registro se cree la partida
 
-Route::get('/verifyemail/{token}', [UserController::class, 'verifyEmail']);
-
 Route::post('/reg', [UserController::class, 'store']);
+Route::get('/verifyemail/{token}', [UserController::class, 'verifyEmail']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/verifycode', [UserController::class, 'verifyCode']);
 
-
-Route::post('/game', [RegistroController::class, 'store']);
-Route::put('/game/{id}', [RegistroController::class, 'update']);
+Route::put('/game/{id}', [RegistroController::class, 'finPartida']);
 
 Route::middleware('jwt.verify')->group(function () {
     Route::get('/user', [UserController::class, 'index']);
@@ -35,4 +32,7 @@ Route::middleware('jwt.verify')->group(function () {
 
     Route::get('/registro', [RegistroController::class, 'index']);
     Route::get('/registro/{id}', [RegistroController::class, 'show']);
+
+    Route::post('/game', [RegistroController::class, 'iniciarPartida']);
+    Route::put('/game', [RegistroController::class, 'comenzarPartida']);
 });

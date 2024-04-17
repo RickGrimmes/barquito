@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Registro;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -48,41 +49,14 @@ class RegistroController extends Controller
         }
     }
 
-    public function store(Request $request)
+    public function iniciarPartida(Request $request)
     {
         try
         {
-            $validator = Validator::make($request->all(), [
-                'player1' => [
-                    'required',
-                    Rule::exists('users', 'id')->where(function ($query) {
-                        $query->where('isActive', true);
-                    }),
-                    Rule::notIn([$request->player2])
-                ],
-                'player2' => [
-                    'required',
-                    Rule::exists('users', 'id')->where(function ($query) {
-                        $query->where('isActive', true);
-                    }),
-                    Rule::notIn([$request->player1])
-                ],
-                'winner' => 'exists:users,id|in:' . $request->player1 . ',' . $request->player2,
-                'loser' => 'exists:users,id|in:' . $request->player1 . ',' . $request->player2,
-            ]);
-
-            if ($validator->fails())
-        {
-            return response()->json([
-                'status' => 'error',
-                'error' => $validator->errors()
-            ], 400);
-        }
-
+            $authenticatedUser = Auth::user();
+         
         $registro = Registro::create([
-            'player1' => $request->player1,
-            'player2' => $request->player2,
-            'winner' => $request->winner,
+            'player1' => $authenticatedUser->id,
         ]);
 
             return response()->json([
@@ -99,7 +73,38 @@ class RegistroController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function comenzarPartida(Request $request)
+    {
+        try
+        {
+            $authenticatedUser = Auth::user();
+
+            $registro = Registro::where('player2', 0)->orderBy('id', 'desc')->first();
+
+            if (!$registro) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'No se encontró ninguna partida disponible'
+                ], 404);
+            }
+            $registro->player2 = $authenticatedUser->id;
+            $registro->save();
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $registro
+            ], 200);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'data' => $e
+            ]);
+        }
+    }
+
+    public function finPartida(Request $request, $id)
     {
         try
         {
@@ -114,8 +119,18 @@ class RegistroController extends Controller
             }
 
             $validator = Validator::make($request->all(), [
-                'winner' => 'required|exists:users,id|in:' . $registro->player1 . ',' . $registro->player2,
-                'loser' => 'required|exists:users,id|in:' . $registro->player1 . ',' . $registro->player2,
+               'winner' => [
+                'required',
+                'exists:users,id',
+                'in:' . $registro->player1 . ',' . $registro->player2,
+                Rule::notIn([$request->loser])
+            ],
+            'loser' => [
+                'required',
+                'exists:users,id',
+                'in:' . $registro->player1 . ',' . $registro->player2,
+                Rule::notIn([$request->winner])
+            ],
             ]);
 
             if ($validator->fails())

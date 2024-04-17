@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('registros', function (Blueprint $table) {
             $table->id();
             $table->integer('player1');
-            $table->integer('player2');
+            $table->integer('player2')->default(0);
             $table->integer('winner')->nullable();
             $table->timestamps();
         });

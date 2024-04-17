@@ -3,7 +3,7 @@
 use Illuminate\Support\Facades\Facade;
 
 return [
-
+ 
     /*
     |--------------------------------------------------------------------------
     | Application Name
@@ -191,7 +191,8 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        // EL DE ABAJO ESTABA COMENTADO, SE DESCOMENTA PARA WEBSOCKET 
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
