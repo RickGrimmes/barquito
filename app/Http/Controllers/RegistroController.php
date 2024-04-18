@@ -49,7 +49,7 @@ class RegistroController extends Controller
         }
     }
 
-    public function iniciarPartida(Request $request)
+    public function crearPartida(Request $request)
     {
         try
         {
@@ -73,7 +73,7 @@ class RegistroController extends Controller
         }
     }
 
-    public function crearPartida(Request $request)
+    public function iniciarPartida(Request $request)
     {
         try
         {
