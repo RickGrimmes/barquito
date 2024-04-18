@@ -28,7 +28,7 @@ Route::put('/game/{id}', [RegistroController::class, 'finPartida']);
 
 Route::middleware('jwt.verify')->group(function () {
     Route::get('/user', [UserController::class, 'index']);
-    Route::get('/user/{id}', [UserController::class, 'show']);
+    Route::get('/show', [UserController::class, 'show']);
 
     Route::get('/registro', [RegistroController::class, 'index']);
     Route::get('/registro/{id}', [RegistroController::class, 'show']);

@@ -34,10 +34,13 @@ class UserController extends Controller
         }
     }
 
-    public function show($id)
+    public function show()
     {
         try
         {
+            $authenticatedUser = Auth::user();
+            $id = $authenticatedUser->id;
+
             $user = User::find($id);
             return response()->json([
                 'status' => 'success',
