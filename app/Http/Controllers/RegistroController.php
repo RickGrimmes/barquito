@@ -79,7 +79,7 @@ class RegistroController extends Controller
         {
             $authenticatedUser = Auth::user();
 
-            $registro = Registro::where('player2', 0)->orderBy('id', 'desc')->first();
+            $registro = Registro::where('player2', 0)->where('player1', '!=', $authenticatedUser->id)->orderBy('id', 'desc')->first();
 
             if (!$registro) {
                 return response()->json([
