@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\UserDetailEvent;
 use App\Mail\CodeEmail;
 use App\Mail\VerificationEmail;
 use App\Models\User;
@@ -42,6 +43,10 @@ class UserController extends Controller
             $id = $authenticatedUser->id;
 
             $user = User::find($id);
+
+            // Disparar el evento
+            event(new UserDetailEvent($user));
+
             return response()->json([
                 'status' => 'success',
                 'data' => $user

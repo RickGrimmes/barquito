@@ -24,10 +24,12 @@ Route::get('/verifyemail/{token}', [UserController::class, 'verifyEmail']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/verifycode', [UserController::class, 'verifyCode']);
 
+Route::get('roblox', [UserController::class, 'index']);
+
 Route::put('/game/{id}', [RegistroController::class, 'finPartida']);
 
 Route::middleware('jwt.verify')->group(function () {
-    Route::get('/user', [UserController::class, 'index']);
+    // Route::get('/user', [UserController::class, 'index']);
     Route::get('/show', [UserController::class, 'show']);
 
     Route::get('/registro', [RegistroController::class, 'index']);
