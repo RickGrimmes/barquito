@@ -36,9 +36,12 @@ return [
             'secret' => env('PUSHER_APP_SECRET'),
             'app_id' => env('PUSHER_APP_ID'),
             'options' => [
-                'cluster' => env('PUSHER_APP_CLUSTER'),
+                //'cluster' => env('PUSHER_APP_CLUSTER'),
+                'cluster' => 'us2',
+                'useTLS' => true,
                 'encrypted' => true,
-                'host' => '192.168.100.128',
+                'host' => '192.168.126.98', // wifi utt
+                //'host' => '192.168.100.128',
                 'port' => 6001,
                 'scheme' => 'http'
             ],

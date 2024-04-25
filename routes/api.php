@@ -26,8 +26,6 @@ Route::post('/verifycode', [UserController::class, 'verifyCode']);
 
 Route::get('roblox', [UserController::class, 'index']);
 
-Route::put('/game/{id}', [RegistroController::class, 'finPartida']);
-
 Route::middleware('jwt.verify')->group(function () {
     // Route::get('/user', [UserController::class, 'index']);
     Route::get('/show', [UserController::class, 'show']);
@@ -37,4 +35,5 @@ Route::middleware('jwt.verify')->group(function () {
 
     Route::post('/game', [RegistroController::class, 'crearPartida']);
     Route::put('/game', [RegistroController::class, 'iniciarPartida']);
+    Route::put('/game/{id}', [RegistroController::class, 'finPartida']);
 });

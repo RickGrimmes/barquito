@@ -108,6 +108,7 @@ class RegistroController extends Controller
     {
         try
         {
+            $authenticatedUser = Auth::user();
             $registro = Registro::find($id);
 
             if ($registro == null)
@@ -118,55 +119,29 @@ class RegistroController extends Controller
                 ], 404);
             }
 
-            $validator = Validator::make($request->all(), [
-               'winner' => [
-                'required',
-                'exists:users,id',
-                'in:' . $registro->player1 . ',' . $registro->player2,
-                Rule::notIn([$request->loser])
-            ],
-            'loser' => [
-                'required',
-                'exists:users,id',
-                'in:' . $registro->player1 . ',' . $registro->player2,
-                Rule::notIn([$request->winner])
-            ],
-            ]);
-
-            if ($validator->fails())
+            if ($registro->player1 != $authenticatedUser->id && $registro->player2 != $authenticatedUser->id)
             {
                 return response()->json([
                     'status' => 'error',
-                    'error' => $validator->errors()
-                ], 400);
+                    'error' => 'El usuario autenticado no es un jugador en este registro'
+                ], 403);
             }
+            
+            $registro->winner = $authenticatedUser->id;
+            $registro->loser = ($registro->player1 == $authenticatedUser->id) ? $registro->player2 : $registro->player1;
+            $registro->save();
 
-            $registro = Registro::where('id', $id)->first();
+            // Incrementa el valor de wins para el usuario winner
+            User::where('id', $registro->winner)->increment('wins');
+            User::where('id', $registro->loser)->increment('losses');
 
-            if ($registro) {
-                $registro->update([
-                    'winner' => $request->winner,
-                    'loser' => $request->loser,
-                ]);
+            // Recarga el modelo con los datos frescos de la base de datos
+            $registro->refresh();
 
-                 // Incrementa el valor de wins para el usuario winner
-                User::where('id', $request->winner)->increment('wins');
-                User::where('id', $request->loser)->increment('losses');
-
-                // Recarga el modelo con los datos frescos de la base de datos
-                $registro->refresh();
-
-                return response()->json([
-                    'status' => 'success',
-                    'data' => $registro
-                ], 200);
-            } else {
-                return response()->json([
-                    'status' => 'error',
-                    'error' => 'Registro no encontrado'
-                ], 404);
-            }
-
+            return response()->json([
+                'status' => 'success',
+                'data' => $registro
+            ], 200);
         }
         catch (\Exception $e)
         {

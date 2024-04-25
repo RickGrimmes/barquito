@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewMessage;
 use App\Events\UserDetailEvent;
 use App\Mail\CodeEmail;
 use App\Mail\VerificationEmail;
@@ -182,10 +183,12 @@ class UserController extends Controller
         $user->verification_token = null;
         $user->save();
 
-        return response()->json([
-            'status' => 'success', 
-            'data' => 'Email verified'
-        ], 200);
+       // return response()->json([
+       //     'status' => 'success', 
+      //      'data' => 'Email verified'
+      //  ], 200);
+          
+        return redirect('http://192.168.126.98:4200');
     }
 
     public function verifyCode(Request $request)
@@ -231,4 +234,60 @@ class UserController extends Controller
            ], 500);
        }
     }
+
+    public function getUserDetailsFromToken($token)
+    {
+        try
+        {
+            // Encuentra al usuario por el token
+            $user = User::where('token', $token)->first();
+
+            if ($user == null)
+            {
+                return response()->json([
+                    'status' => 'error',
+                    'error' => 'User not found'
+                ], 404);
+            }
+
+            // Disparar el evento
+            event(new UserDetailEvent($user));
+
+            return response()->json([
+                'status' => 'success',
+                'data' => $user
+            ], 200);
+        }
+        catch (\Exception $e)
+        {
+            return response()->json([
+                'status' => 'error',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+    public function store2(Request $request)
+    {
+        // Crear un nuevo mensaje
+        $message = new Message;
+        $message->content = $request->content;
+        $message->user_id = Auth::id();
+        $message->save();
+
+        // Buscar al usuario por el token
+        $user = User::where('token', $request->token)->first();
+
+        // Si el usuario no existe, devolver un error
+        if (!$user) {
+            return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
+        }
+
+        // Disparar el evento NewMessage con el mensaje y los detalles del usuario
+        event(new NewMessage($message, $user));
+
+        return response()->json(['status' => 'success', 'message' => $message], 200);
+    }
+
 }
