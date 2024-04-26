@@ -85,6 +85,9 @@ class UserController extends Controller
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
+
+            // Disparar el evento NewMessage con el usuario
+            event(new NewMessage($user));
     
             $token = hash('sha256', Str::random(60));
             $user->verification_token = $token;
@@ -266,28 +269,4 @@ class UserController extends Controller
             ], 500);
         }
     }
-
-
-    public function store2(Request $request)
-    {
-        // Crear un nuevo mensaje
-        $message = new Message;
-        $message->content = $request->content;
-        $message->user_id = Auth::id();
-        $message->save();
-
-        // Buscar al usuario por el token
-        $user = User::where('token', $request->token)->first();
-
-        // Si el usuario no existe, devolver un error
-        if (!$user) {
-            return response()->json(['status' => 'error', 'message' => 'User not found'], 404);
-        }
-
-        // Disparar el evento NewMessage con el mensaje y los detalles del usuario
-        event(new NewMessage($message, $user));
-
-        return response()->json(['status' => 'success', 'message' => $message], 200);
-    }
-
 }

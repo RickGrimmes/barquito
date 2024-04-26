@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\EventController;
 use App\Http\Controllers\RegistroController;
 use App\Http\Controllers\UserController;
 use App\Models\Registro;
@@ -37,3 +38,6 @@ Route::middleware('jwt.verify')->group(function () {
     Route::put('/game', [RegistroController::class, 'iniciarPartida']);
     Route::put('/game/{id}', [RegistroController::class, 'finPartida']);
 });
+
+
+Route::post('/emitir-evento', [EventController::class, 'emitirEvento']);
